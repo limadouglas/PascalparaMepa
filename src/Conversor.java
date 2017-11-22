@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 
 public class Conversor {
-ArrayList<String> tokens = new ArrayList<String>();
+ArrayList<String> tokensPascal = new ArrayList<String>();
 ArrayList<String> tokensMepa = new ArrayList<String>();
 
     BufferedReader lerArq;
@@ -23,25 +23,28 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
         String[] palavra = new String[0];
 
         try {
+            linha = lerArq.readLine();
             while(linha != null){
-                linha = lerArq.readLine();
+
                 palavra = linha.split(" ");
 
                 for(int i = 0; i < palavra.length; i++){
-                    if(palavra[i] != " " && palavra[i] != "\n" && palavra[i] != "\r" && palavra[i].length()>0) {
-                        tokens.add(palavra[i]);
+                    if(palavra[i] != "" && palavra[i] != " " && palavra[i] != "\n" && palavra[i] != "\r" && palavra[i].length()>0) {
+                        palavrasReconhecidas(palavra[i]);
                     }
-
                 }
 
                 palavra = new String[0];
+                linha = lerArq.readLine();
             }
 
 
-            printar();
-            // if( palavrasReconhecidas(palavra) ){
-            //  palavra = "";
-            //}
+
+            //System.out.println("Tokens Pascal: *********** ");
+            //printar(tokensPascal);
+            System.out.println("Tokens Mepa  : *********** ");
+            printar(tokensMepa);
+
 
         }catch(Exception e){
             System.out.println("Erro classe Conversor: " + e);
@@ -54,39 +57,40 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
         palavra  = palavra.toUpperCase();
 
         switch(palavra){
-            case "PROGRAM" :  tokensMepa.add("INPP"); break;
-            case "VAR"     :  tokensMepa.add(palavra);break;
-            case "INTERGER":  break;
-            case "BOOLEAN" :  break;
-            case "CHAR"    :  break;
-            case "STRING"  :  break;
-            case "DOUBLE"  :  break;
-            case "BEGIN"   :  break;
-            case "END"     :  break;
-            case "READ"    :  break;
-            case "WHILE"   :  break;
-            case "WRITE"   :  break;
-            case "DO"      :  break;
-            case "IF"      :  break;
-            case "THEN"    :  break;
-            case "ELSE"    :  break;
-            case "."       :  break;
-            case ","       :  break;
-            case ";"       :  break;
-            case ">"       :  break;
-            case "<"       :  break;
-            case "="       :  break;
-            case "<="      :  break;
-            case ">="      :  break;
-            case ":="      :  break;
-            case "+"       :  break;
-            case "-"       :  break;
-            case "*"       :  break;
-            case "/"       :  break;
-            case ":"       :  break;
-            case " "       :  break;
-            case "\n"      :  break;
-            default        :  break;
+            case "PROGRAM" :  tokensMepa.add("INPP") ;break;
+            case "READ"    :  tokensMepa.add("LEIT") ;break;
+            case "WRITE"   :  tokensMepa.add("IMPR") ;break;
+            case "AND"     :  tokensMepa.add("CONJ") ;break;
+            case "OR"      :  tokensMepa.add("DISJ") ;break;
+            case ">"       :  tokensMepa.add("CMMA");break;
+            case "<"       :  tokensMepa.add("CMME");break;
+            case "=="      :  tokensMepa.add("CMIG");break;
+            case "!="      :  tokensMepa.add("CMDG");break;
+            case "<="      :  tokensMepa.add("CMEG");break;
+            case ">="      :  tokensMepa.add("CMAG");break;
+            case ":="      :  tokensMepa.add("ARMZ");break;
+            case "+"       :  tokensMepa.add("SOMA");break;
+            case "-"       :  tokensMepa.add("SUBT");break;
+            case "*"       :  tokensMepa.add("MULT");break;
+            case "/"       :  tokensMepa.add("DIVI");break;
+            case "VAR"     :
+            case "INTERGER":
+            case "BOOLEAN" :
+            case "CHAR"    :
+            case "STRING"  :
+            case "DOUBLE"  :
+            case "BEGIN"   :
+            case "END"     :
+            case "WHILE"   :
+            case "DO"      :
+            case "IF"      :
+            case "THEN"    :
+            case "ELSE"    :
+            case "."       :
+            case ","       :
+            case ";"       :
+            case ":"       :
+            default        :  tokensMepa.add(palavra);break;
 
         }
 
@@ -95,7 +99,7 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
     }
 
 
-    void printar(){
+    void printar(ArrayList<String> tokens){
         for(int i = 0; i < tokens.size(); i++){
             System.out.println(tokens.get(i));
         }

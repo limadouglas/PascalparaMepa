@@ -8,6 +8,6 @@ public class Principal {
         System.out.println(arquivo);
         Conversor conversor = new Conversor(arquivo);
         conversor.gerarTokens();
-        conversor.printar();
+        //conversor.printar();
     }
 }
