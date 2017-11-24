@@ -1,3 +1,5 @@
+// Douglas Henrique de Souza Lima --- 551066
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -8,6 +10,7 @@ public class Principal {
         System.out.println(arquivo);
         Conversor conversor = new Conversor(arquivo);
         conversor.gerarTokens();
+        conversor.converter();
         //conversor.printar();
     }
 }
