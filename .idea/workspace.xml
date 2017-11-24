@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe5792cc-83c9-4457-8907-3c2f4835c629" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ConcatenarArrays.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Conversor.java" afterPath="$PROJECT_DIR$/src/Conversor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Principal.java" afterPath="$PROJECT_DIR$/src/Principal.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/script.pas" afterPath="$PROJECT_DIR$/src/script.pas" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -48,8 +44,8 @@
       <file leaf-file-name="Conversor.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Conversor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="69">
-              <caret line="218" column="44" lean-forward="true" selection-start-line="218" selection-start-column="44" selection-end-line="218" selection-end-column="44" />
+            <state relative-caret-position="149">
+              <caret line="233" column="0" lean-forward="true" selection-start-line="233" selection-start-column="0" selection-end-line="233" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#288#296#0" expanded="true" />
@@ -314,7 +310,14 @@
       <option name="project" value="LOCAL" />
       <updated>1511230733744</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="quase finalizado">
+      <created>1511546920845</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1511546920845</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -330,8 +333,8 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.785381" sideWeight="0.5090909" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13090418" sideWeight="0.4909091" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13090418" sideWeight="0.4909091" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32928476" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928476" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16977078" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -388,7 +391,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="reconhecimento de tokens finalizado" />
-    <option name="LAST_COMMIT_MESSAGE" value="reconhecimento de tokens finalizado" />
+    <MESSAGE value="quase finalizado" />
+    <option name="LAST_COMMIT_MESSAGE" value="quase finalizado" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -672,8 +676,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Conversor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="218" column="44" lean-forward="true" selection-start-line="218" selection-start-column="44" selection-end-line="218" selection-end-column="44" />
+        <state relative-caret-position="149">
+          <caret line="233" column="0" lean-forward="true" selection-start-line="233" selection-start-column="0" selection-end-line="233" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#288#296#0" expanded="true" />

@@ -215,7 +215,7 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
 
     } // FINAL DO MÉTODO.
 
-
+    // solucionar reconhecimento **************************
     private void reconhecerExpressao(int i){
 
         if(Objects.equals(tokensMepa.get(i), "ARMZ")){
