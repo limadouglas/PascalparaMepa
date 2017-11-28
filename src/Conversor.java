@@ -1,4 +1,5 @@
-// Douglas Henrique de Souza Lima --- 551066
+// Douglas Henrique --- 551066
+// Matheus Ferreira --- 547980
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 
 public class Conversor {
-ArrayList<String> tokensMepa = new ArrayList<String>();
+    ArrayList<String> tokensMepa = new ArrayList<String>();
     ArrayList<String> novoTokensMepa = new ArrayList<String>();
     ArrayList<String> variaveis = new ArrayList<String>();
     ArrayList<String> vetorBlocos = new ArrayList<String>();
@@ -36,17 +37,12 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
                         palavrasReconhecidas(palavra[i]);
                     }
                 }
-
                 palavra = new String[0];
                 linha = lerArq.readLine();
             }
 
-
-
-            //System.out.println("Tokens Pascal: *********** ");
-            //printar(tokensPascal);
-            System.out.println("Tokens Mepa  : *********** ");
-            printar(tokensMepa);
+           // System.out.println("******* Pre convertido para Mepa *******");
+           // printar(tokensMepa);
 
 
         }catch(Exception e){
@@ -97,53 +93,50 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
         }
     }
 
-    public void converter(){
+    public void converter() {
         int contadorVariaveis = 0;
 
-        System.out.println("Tokens NOVO MEPA  : ******************* ");
+        System.out.println("\n ******* MEPA ******* \n");
 
-        for(int i=0; i < tokensMepa.size(); i++){
-            System.out.println("******"+tokensMepa.get(i)+"******");
-
+        for (int i = 0; i < tokensMepa.size(); i++) {
 
             // reconhecendo Program inicial.
-            if(Objects.equals(tokensMepa.get(i), "INPP")){
+            if (Objects.equals(tokensMepa.get(i), "INPP")) {
                 novoTokensMepa.add("INPP");
             }
 
             // reconhecendo variaveis.
-             if(Objects.equals(tokensMepa.get(i), "VAR")){
-                 while(!Objects.equals(tokensMepa.get(i), "BEGIN")){
-                     if(verificarDeclaracao(tokensMepa.get(i))) {
-                         contadorVariaveis++;
-                         variaveis.add(tokensMepa.get(i));
-                     }
-                     i++;
-                 }
-                 novoTokensMepa.add("AMEM " + String.valueOf(contadorVariaveis) );
-                 printar(novoTokensMepa);
-             }
+            if (Objects.equals(tokensMepa.get(i), "VAR")) {
+                while (!Objects.equals(tokensMepa.get(i), "BEGIN")) {
+                    if (verificarDeclaracao(tokensMepa.get(i))) {
+                        contadorVariaveis++;
+                        variaveis.add(tokensMepa.get(i));
+                    }
+                    i++;
+                }
+                novoTokensMepa.add("AMEM " + String.valueOf(contadorVariaveis));
+            }
 
-             // reconhecendo leitura.
-             if(Objects.equals(tokensMepa.get(i), "LEIT")){
-                 novoTokensMepa.add("LEIT");
-                 int indiceVariavel=-1;
-                 while(!Objects.equals(tokensMepa.get(i), ";")) {
-                     indiceVariavel = verificarVariavelExistente(tokensMepa.get(i));
-                     if(indiceVariavel != -1) {
-                         novoTokensMepa.add("ARMZ " + String.valueOf(indiceVariavel));
-                     }
-                     i++;
-                 }
-             }
-
-
-             //reconhecendo escrita.
-            if(Objects.equals(tokensMepa.get(i), "IMPR")){
-                int indiceVariavel=-1;
-                while(!Objects.equals(tokensMepa.get(i), ";")) {
+            // reconhecendo leitura.
+            if (Objects.equals(tokensMepa.get(i), "LEIT")) {
+                int indiceVariavel = -1;
+                while (!Objects.equals(tokensMepa.get(i), ";")) {
                     indiceVariavel = verificarVariavelExistente(tokensMepa.get(i));
-                    if(indiceVariavel != -1) {
+                    if (indiceVariavel != -1) {
+                        novoTokensMepa.add("LEIT");
+                        novoTokensMepa.add("ARMZ " + String.valueOf(indiceVariavel));
+                    }
+                    i++;
+                }
+            }
+
+
+            //reconhecendo escrita.
+            if (Objects.equals(tokensMepa.get(i), "IMPR")) {
+                int indiceVariavel = -1;
+                while (!Objects.equals(tokensMepa.get(i), ";")) {
+                    indiceVariavel = verificarVariavelExistente(tokensMepa.get(i));
+                    if (indiceVariavel != -1) {
                         novoTokensMepa.add("CRVL " + String.valueOf(indiceVariavel));
                         novoTokensMepa.add("IMPR");
                     }
@@ -152,38 +145,112 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
             }
 
             // reconhecendo WHILE.
-            if(Objects.equals(tokensMepa.get(i), "WHILE")){
+            if (Objects.equals(tokensMepa.get(i), "WHILE")) {
                 vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size()-1) + " NADA");
-                while(!verificarComparacao(tokensMepa.get(i))){i++;} // ficar em loop enquanto não encontrar comparador
+                novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                while (!verificarComparacao(tokensMepa.get(i))) {
+                    i++;
+                } // ficar em loop enquanto não encontrar comparador
                 reconhecerExpressaoComparacao(i);
-                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size()-1).substring(1, 2));
-                novoTokensMepa.add("DSVF L" + String.valueOf(aux+1));
+                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size() - 1).substring(1, 2));
+                novoTokensMepa.add("DSVF L" + String.valueOf(aux + 1));
             }
 
             // reconhecendo IF.
-            if(Objects.equals(tokensMepa.get(i), "IF")){
+            if (Objects.equals(tokensMepa.get(i), "IF")) {
                 //vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
                 //novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size()-1) + " NADA");
-                while(!verificarComparacao(tokensMepa.get(i))){i++; if(i>100000)break;} // ficar em loop enquanto não encontrar comparador
+                while (!verificarComparacao(tokensMepa.get(i))) {
+                    i++;
+                    if (i > 100000) break;
+                } // ficar em loop enquanto não encontrar comparador
                 reconhecerExpressaoComparacao(i);
-                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size()-1).substring(1, 2));
+                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size() - 1).substring(1, 2));
                 novoTokensMepa.add("DSVF L" + String.valueOf(aux));
             }
-            if(fecharSalto)
-            {
-                System.out.println();
-            }
-
 
             // reconhecendo atribuição, com ou sem expressão.
-            if(Objects.equals(tokensMepa.get(i), "ARMZ")){
-                int indiceVariavelProx = verificarVariavelExistente(tokensMepa.get(i+1));
-                int indiceVariavelAnt = verificarVariavelExistente(tokensMepa.get(i-1));
+            if (Objects.equals(tokensMepa.get(i), "ARMZ")) {
 
-                if(!Objects.equals(tokensMepa.get(i + 2), ";")) {
+                int indiceVariavelProx = verificarVariavelExistente(tokensMepa.get(i + 1));
+                int indiceVariavelAnt = verificarVariavelExistente(tokensMepa.get(i - 1));
+
+                if (!Objects.equals(tokensMepa.get(i + 2), ";")) {
                     while (!Objects.equals(tokensMepa.get(i), ";")) {
 
+                        ArrayList<String> array = new ArrayList<String>();
+                        ArrayList<String> arrayOrdenado = new ArrayList<String>();
+                        i++;
+                        while (!tokensMepa.get(i).equals(";")) {
+                            array.add(tokensMepa.get(i));
+                            i++;
+                        }
+
+
+                        for (int j = 0; j < array.size(); j++) {
+                            if (Objects.equals(array.get(j), "MULT") || Objects.equals(array.get(j), "DIVI")) {
+
+                                    if(j+1 < array.size()) {
+                                        if (!verificarOperacoes(array.get(j + 1))) {
+                                            arrayOrdenado.add(array.get(j + 1));
+                                            array.remove(j + 1);
+                                        }
+                                    }
+                                    if(array.size() >= 1) {
+                                        if (!verificarOperacoes(array.get(j - 1))) {
+                                            arrayOrdenado.add(array.get(j - 1));
+                                            array.remove(j - 1);
+                                            j--;
+                                        }
+                                    }
+
+                                    arrayOrdenado.add(array.get(j));
+                                    array.remove(j);
+
+                                    j = 0;
+
+                            }
+                        }
+
+                            for (int j = 0; j < array.size(); j++) {
+                                if (array.size() > 1) {
+                                    if (Objects.equals(array.get(j), "SOMA") || Objects.equals(array.get(j), "SUBT")) {
+                                        if(j+1<array.size()) {
+                                            if (!verificarOperacoes(array.get(j + 1))) {
+                                                arrayOrdenado.add(array.get(j + 1));
+                                                array.remove(j + 1);
+                                            }
+                                        }
+                                        if(array.size() >= 1) {
+                                            if (!verificarOperacoes(array.get(j - 1))) {
+                                                arrayOrdenado.add(array.get(j - 1));
+                                                array.remove(j - 1);
+                                                j--;
+                                            }
+                                        }
+
+                                        arrayOrdenado.add(array.get(j));
+                                        array.remove(j);
+
+                                        j = 0;
+                                    }
+                                }else{
+                                    arrayOrdenado.add(array.get(j));
+                                    array.remove(j);
+                                }
+                            }
+
+                            for (int j = 0; j < arrayOrdenado.size(); j++) {
+                                if (verificarVariavelExistente(arrayOrdenado.get(j)) != -1) {
+                                    novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(arrayOrdenado.get(j))));
+                                } else if (!verificarOperacoes(arrayOrdenado.get(j))) {
+                                    novoTokensMepa.add("CRCT " + String.valueOf(arrayOrdenado.get(j)));
+                                } else {
+                                    novoTokensMepa.add(arrayOrdenado.get(j));
+                                }
+                            }
+
+                        /*
                         if (verificarOperacoes(tokensMepa.get(i))) {
                             if( verificarVariavelExistente(tokensMepa.get(i-1)) != -1 ){
                                 novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i-1))));
@@ -201,54 +268,54 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
                             }
                         }
                         i++;
-                    }
-                } else {
-                    if( verificarVariavelExistente(tokensMepa.get(i+1))  != -1 ){
-                        novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i+1))));
+                        */
+                        }
                     } else{
-                        novoTokensMepa.add("CRCT " + String.valueOf(tokensMepa.get(i+1)));
+                        if (verificarVariavelExistente(tokensMepa.get(i + 1)) != -1) {
+                            novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i + 1))));
+                        } else {
+                            novoTokensMepa.add("CRCT " + String.valueOf(tokensMepa.get(i + 1)));
+                        }
+                    }
+                    novoTokensMepa.add("ARMZ " + String.valueOf(indiceVariavelAnt));
+                    //  if(tokensMepa.get(i).equals(";"))i--;
+
+                }
+
+                if (Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE") || (Objects.equals(tokensMepa.get(i), ";") && fecharSalto)) {
+                    if (Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE")) {
+                        novoTokensMepa.add("DSVS " + vetorBlocos.get(vetorBlocos.size() - 1));
+                        vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+                        novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                    }
+
+                    // reconhecendo ELSE.
+                    if (Objects.equals(tokensMepa.get(i), "ELSE")) {
+                        vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+                        novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                        fecharSalto = true;
+                    } else if ((Objects.equals(tokensMepa.get(i), ";") && fecharSalto)) { // problema aqui
+                        vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+                        novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 2) + " NADA");
+                        fecharSalto = false;
                     }
                 }
-                novoTokensMepa.add("ARMZ " + String.valueOf(indiceVariavelAnt));
-              //  if(tokensMepa.get(i).equals(";"))i--;
 
-            }
-
-            if(Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE") || (Objects.equals(tokensMepa.get(i), ";") && fecharSalto) ){
-                System.out.println();
-                if(Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE")) {
-                    novoTokensMepa.add("DSVS " + vetorBlocos.get(vetorBlocos.size() - 1));
-                    vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                    novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                // reconhecendo final 'end.'.
+                if (Objects.equals(tokensMepa.get(i), "END.")) {
+                    novoTokensMepa.add("DMEM " + variaveis.size());
+                    novoTokensMepa.add("PARA");
                 }
 
-                // reconhecendo ELSE.
-                if(Objects.equals(tokensMepa.get(i), "ELSE")){
-                    vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                    novoTokensMepa.add( vetorBlocos.get(vetorBlocos.size()-1) + " NADA" );
-                    fecharSalto = true;
-                } else if(( Objects.equals(tokensMepa.get(i), ";") && fecharSalto )){ // problema aqui
-                    vetorBlocos.add( "L" + String.valueOf(vetorBlocos.size()) );
-                    novoTokensMepa.add( vetorBlocos.get(vetorBlocos.size()-2) + " NADA" );
-                    fecharSalto = false;
-                }
-            }
 
-            // reconhecendo final 'end.'.
-            if(Objects.equals(tokensMepa.get(i), "END.")){
-                novoTokensMepa.add("DMEM " + variaveis.size());
-                novoTokensMepa.add("PARA");
-            }
+            } // FINAL DO FOR.
+
+            printar(novoTokensMepa);
+
+        } // FINAL DO MÉTODO.
 
 
-        } // FINAL DO FOR.
-
-        printar(novoTokensMepa);
-
-    } // FINAL DO MÉTODO.
-
-    // solucionar reconhecimento **************************
-    private void reconhecerExpressaoComparacao(int i){
+    private void reconhecerExpressaoComparacao(int i) {
 
         if(verificarComparacao(tokensMepa.get(i))){
             int indiceVariavelProx = verificarVariavelExistente(tokensMepa.get(i+1));
@@ -291,7 +358,6 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
 
             }
             novoTokensMepa.add(tokensMepa.get(i));
-
         }
 
     }
@@ -322,6 +388,8 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
         }
 
         return -1;
+
+
     }
 
     private boolean verificarOperacoes(String token){
@@ -367,21 +435,49 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
 
 
 /*
-Program teste;
-var a, b, c, d: integer;
-begin
-       read(a,b);
-      c := a+b;
-       while (c >= 0) do
-      begin
-             c:= c-1;
-             if (c >= a) then
-                   d := d + c*2;
-            else
-                   d:=d + c*3;
-     end
-    write( a, b, d);
-end.
+PROGRAM TESTE ;
+    VAR N , K : INTEGER ;
+        F1 , F2 , F3 : INTEGER ;
+BEGIN
+    READ ( N ) ;
+    F1 := 0 ; F2 := 1 ; K := 1 ;
+    WHILE K <= N DO
+    BEGIN
+        F3 := F1 + F2 ;
+        F1 := F2 ;
+        F2 := F3 ;
+        K := K + 1 ;
+    END;
+
+    WRITE ( N , F1 ) ;
+
+    IF ( N >= K ) THEN
+           N := F1 + F2 * 2 ;
+    ELSE
+           N := F3 + K * 3 ;
+
+END.
+*/
+
+/*
+PROGRAM TESTE ;
+VAR A , B , C , D : INTEGER ;
+BEGIN
+      READ ( A , B ) ;
+      C := A + B ;
+      WHILE ( C >= 0) DO
+      BEGIN
+             C := C - 1 ;
+             IF ( C >= A) THEN
+                   D := D + C * 2 ;
+            ELSE
+                   D := D + C * 3 ;
+     END;
+    WRITE( A , B , D ) ;
+END.
+
+
+
 */
 
 

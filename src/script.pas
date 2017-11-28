@@ -1,22 +1,15 @@
 PROGRAM TESTE ;
-    VAR N , K : INTEGER ;
-        F1 , F2 , F3 : INTEGER ;
+VAR A , B , C , D : INTEGER ;
 BEGIN
-    READ ( N ) ;
-    F1 := 0 ; F2 := 1 ; K := 1 ;
-    WHILE K <= N DO
-    BEGIN
-        F3 := F1 + F2 ;
-        F1 := F2 ;
-        F2 := F3 ;
-        K := K + 1 ;
-    END;
-
-    WRITE ( N , F1 ) ;
-
-    IF ( N >= K ) THEN
-           N := F1 + F2 * 2 ;
-    ELSE
-           N := F3 + K * 3 ;
-
+      READ ( A , B ) ;
+      C := A + B ;
+      WHILE ( C >= 0 ) DO
+      BEGIN
+             C := C - 1 ;
+             IF ( C >= A ) THEN
+                   D := D + C * 2 ;
+            ELSE
+                   D := D + C * 3 ;
+     END;
+    WRITE( A , B , D ) ;
 END.

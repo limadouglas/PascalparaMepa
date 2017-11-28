@@ -1,4 +1,5 @@
-// Douglas Henrique de Souza Lima --- 551066
+// Douglas Henrique --- 551066
+// Matheus Ferreira --- 547980
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +12,5 @@ public class Principal {
         Conversor conversor = new Conversor(arquivo);
         conversor.gerarTokens();
         conversor.converter();
-        //conversor.printar();
     }
 }
