@@ -11,5 +11,12 @@ BEGIN
         F2 := F3 ;
         K := K + 1 ;
     END;
+
     WRITE ( N , F1 ) ;
+
+    IF ( N >= K ) THEN
+           N := F1 + F2 * 2 ;
+    ELSE
+           N := F3 + K * 3 ;
+
 END.

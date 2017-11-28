@@ -13,6 +13,7 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
     ArrayList<String> novoTokensMepa = new ArrayList<String>();
     ArrayList<String> variaveis = new ArrayList<String>();
     ArrayList<String> vetorBlocos = new ArrayList<String>();
+    boolean fecharSalto = false;
 
     BufferedReader lerArq;
 
@@ -150,19 +151,28 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
                 }
             }
 
-            // reconhecendo while.
+            // reconhecendo WHILE.
             if(Objects.equals(tokensMepa.get(i), "WHILE")){
                 vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
                 novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size()-1) + " NADA");
-                reconhecerExpressao(i);
+                while(!verificarComparacao(tokensMepa.get(i))){i++;} // ficar em loop enquanto não encontrar comparador
+                reconhecerExpressaoComparacao(i);
                 int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size()-1).substring(1, 2));
-                novoTokensMepa.add("DSVS L" + String.valueOf(aux+1));
+                novoTokensMepa.add("DSVF L" + String.valueOf(aux+1));
             }
 
-            if(Objects.equals(tokensMepa.get(i), "END;")){
-                novoTokensMepa.add("DSVS " + vetorBlocos.get(vetorBlocos.size()-1));
-                vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size()-1) + " NADA");
+            // reconhecendo IF.
+            if(Objects.equals(tokensMepa.get(i), "IF")){
+                //vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+                //novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size()-1) + " NADA");
+                while(!verificarComparacao(tokensMepa.get(i))){i++; if(i>100000)break;} // ficar em loop enquanto não encontrar comparador
+                reconhecerExpressaoComparacao(i);
+                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size()-1).substring(1, 2));
+                novoTokensMepa.add("DSVF L" + String.valueOf(aux));
+            }
+            if(fecharSalto)
+            {
+                System.out.println();
             }
 
 
@@ -200,6 +210,28 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
                     }
                 }
                 novoTokensMepa.add("ARMZ " + String.valueOf(indiceVariavelAnt));
+              //  if(tokensMepa.get(i).equals(";"))i--;
+
+            }
+
+            if(Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE") || (Objects.equals(tokensMepa.get(i), ";") && fecharSalto) ){
+                System.out.println();
+                if(Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE")) {
+                    novoTokensMepa.add("DSVS " + vetorBlocos.get(vetorBlocos.size() - 1));
+                    vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+                    novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                }
+
+                // reconhecendo ELSE.
+                if(Objects.equals(tokensMepa.get(i), "ELSE")){
+                    vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+                    novoTokensMepa.add( vetorBlocos.get(vetorBlocos.size()-1) + " NADA" );
+                    fecharSalto = true;
+                } else if(( Objects.equals(tokensMepa.get(i), ";") && fecharSalto )){ // problema aqui
+                    vetorBlocos.add( "L" + String.valueOf(vetorBlocos.size()) );
+                    novoTokensMepa.add( vetorBlocos.get(vetorBlocos.size()-2) + " NADA" );
+                    fecharSalto = false;
+                }
             }
 
             // reconhecendo final 'end.'.
@@ -216,16 +248,16 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
     } // FINAL DO MÉTODO.
 
     // solucionar reconhecimento **************************
-    private void reconhecerExpressao(int i){
+    private void reconhecerExpressaoComparacao(int i){
 
-        if(Objects.equals(tokensMepa.get(i), "ARMZ")){
+        if(verificarComparacao(tokensMepa.get(i))){
             int indiceVariavelProx = verificarVariavelExistente(tokensMepa.get(i+1));
             int indiceVariavelAnt = verificarVariavelExistente(tokensMepa.get(i-1));
 
-            if(!Objects.equals(tokensMepa.get(i + 2), ";")) {
-                while (!Objects.equals(tokensMepa.get(i), ";")) {
+            if(!Objects.equals(tokensMepa.get(i + 2), "DO") && !Objects.equals(tokensMepa.get(i + 2), "THEN") && !Objects.equals(tokensMepa.get(i + 2), ")")) {
+                while (!Objects.equals(tokensMepa.get(i), "DO") && !Objects.equals(tokensMepa.get(i), "THEN") && !Objects.equals(tokensMepa.get(i), ")")) {
 
-                    if (verificarOperacoes(tokensMepa.get(i))) {
+                    if (verificarComparacao(tokensMepa.get(i))) {
                         if( verificarVariavelExistente(tokensMepa.get(i-1)) != -1 ){
                             novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i-1))));
                         } else{
@@ -244,13 +276,22 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
                     i++;
                 }
             } else {
-                if( verificarVariavelExistente(tokensMepa.get(i+1))  != -1 ){
-                    novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i+1))));
-                } else{
-                    novoTokensMepa.add("CRCT " + String.valueOf(tokensMepa.get(i+1)));
+
+                if( verificarVariavelExistente(tokensMepa.get(i-1))  != -1 ){
+                    novoTokensMepa.add( "CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i-1))) );
+                } else {
+                    novoTokensMepa.add( "CRCT " + String.valueOf(tokensMepa.get(i-1)) );
                 }
+
+                if( verificarVariavelExistente(tokensMepa.get(i+1))  != -1 ){
+                    novoTokensMepa.add( "CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i+1))) );
+                } else {
+                    novoTokensMepa.add( "CRCT " + String.valueOf(tokensMepa.get(i + 1)) );
+                }
+
             }
-            novoTokensMepa.add("ARMZ " + String.valueOf(indiceVariavelAnt));
+            novoTokensMepa.add(tokensMepa.get(i));
+
         }
 
     }
@@ -294,6 +335,20 @@ ArrayList<String> tokensMepa = new ArrayList<String>();
             case "DIVI": return true;
 
             default    : return false;
+        }
+    }
+
+    public boolean verificarComparacao(String token){
+        switch (token){
+            case "CONJ"     :  return true;
+            case "DISJ"     :  return true;
+            case "CMMA"     :  return true;
+            case "CMME"     :  return true;
+            case "CMIG"     :  return true;
+            case "CMDG"     :  return true;
+            case "CMEG"     :  return true;
+            case "CMAG"     :  return true;
+            default         :  return false;
         }
     }
 
