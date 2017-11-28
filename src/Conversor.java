@@ -1,6 +1,21 @@
 // Douglas Henrique --- 551066
 // Matheus Ferreira --- 547980
 
+
+/* OBSERVAÇÕES
+
+    O script em pascal tem que ter todos os tokens separados por um espaço,
+    exemplo correto  : a := 1 + 1 ;
+    exemplo incorreto: a:=1+1;
+
+    As ultimas linhas deste arquivo possuem dois codigos em pascal testados neste exemplo.
+
+    todos os exercicios do trabalho foram implementados!
+
+    o codigo mepa é mostrado no console e não em um arquivo separado!
+
+ */
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +28,8 @@ public class Conversor {
     ArrayList<String> tokensMepa = new ArrayList<String>();
     ArrayList<String> novoTokensMepa = new ArrayList<String>();
     ArrayList<String> variaveis = new ArrayList<String>();
-    ArrayList<String> vetorBlocos = new ArrayList<String>();
+    ArrayList<String> vetorBlocosAbertos = new ArrayList<String>();
+    ArrayList<String> vetorBlocosFechados = new ArrayList<String>();
     boolean fecharSalto = false;
 
     BufferedReader lerArq;
@@ -40,9 +56,6 @@ public class Conversor {
                 palavra = new String[0];
                 linha = lerArq.readLine();
             }
-
-           // System.out.println("******* Pre convertido para Mepa *******");
-           // printar(tokensMepa);
 
 
         }catch(Exception e){
@@ -131,7 +144,7 @@ public class Conversor {
             }
 
 
-            //reconhecendo escrita.
+            //reconhecendo IMPRIMIR.
             if (Objects.equals(tokensMepa.get(i), "IMPR")) {
                 int indiceVariavel = -1;
                 while (!Objects.equals(tokensMepa.get(i), ";")) {
@@ -146,27 +159,32 @@ public class Conversor {
 
             // reconhecendo WHILE.
             if (Objects.equals(tokensMepa.get(i), "WHILE")) {
-                vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                vetorBlocosAbertos.add("L" + String.valueOf(vetorBlocosAbertos.size()));
+                novoTokensMepa.add(vetorBlocosAbertos.get(vetorBlocosAbertos.size() - 1) + " NADA");
                 while (!verificarComparacao(tokensMepa.get(i))) {
                     i++;
                 } // ficar em loop enquanto não encontrar comparador
                 reconhecerExpressaoComparacao(i);
-                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size() - 1).substring(1, 2));
+                int aux = Integer.parseInt(vetorBlocosAbertos.get(vetorBlocosAbertos.size() - 1).substring(1, 2));
                 novoTokensMepa.add("DSVF L" + String.valueOf(aux + 1));
+                vetorBlocosFechados.add(vetorBlocosAbertos.get(vetorBlocosAbertos.size()-1));
             }
 
             // reconhecendo IF.
             if (Objects.equals(tokensMepa.get(i), "IF")) {
-                //vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
+
                 //novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size()-1) + " NADA");
                 while (!verificarComparacao(tokensMepa.get(i))) {
                     i++;
                     if (i > 100000) break;
                 } // ficar em loop enquanto não encontrar comparador
                 reconhecerExpressaoComparacao(i);
-                int aux = Integer.parseInt(vetorBlocos.get(vetorBlocos.size() - 1).substring(1, 2));
+                vetorBlocosAbertos.add("L" + String.valueOf(vetorBlocosAbertos.size()));
+                vetorBlocosFechados.add(vetorBlocosAbertos.get(vetorBlocosAbertos.size()-1));
+                //System.out.println(vetorBlocosAbertos.get(vetorBlocosAbertos.size() - 1).substring(1, 2)+"============");
+                int aux = Integer.parseInt(vetorBlocosAbertos.get(vetorBlocosAbertos.size() - 1).substring(1, 2));
                 novoTokensMepa.add("DSVF L" + String.valueOf(aux));
+
             }
 
             // reconhecendo atribuição, com ou sem expressão.
@@ -249,26 +267,6 @@ public class Conversor {
                                     novoTokensMepa.add(arrayOrdenado.get(j));
                                 }
                             }
-
-                        /*
-                        if (verificarOperacoes(tokensMepa.get(i))) {
-                            if( verificarVariavelExistente(tokensMepa.get(i-1)) != -1 ){
-                                novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i-1))));
-                            } else{
-                                novoTokensMepa.add("CRCT " + String.valueOf(tokensMepa.get(i-1)));
-                            }
-
-                            if(Objects.equals(tokensMepa.get(i + 2), ";")) {
-                                if( verificarVariavelExistente(tokensMepa.get(i+1))  != -1 ){
-                                    novoTokensMepa.add("CRVL " + String.valueOf(verificarVariavelExistente(tokensMepa.get(i+1))));
-                                } else{
-                                    novoTokensMepa.add("CRCT " + String.valueOf(tokensMepa.get(i+1)));
-                                }
-                                novoTokensMepa.add(tokensMepa.get(i));
-                            }
-                        }
-                        i++;
-                        */
                         }
                     } else{
                         if (verificarVariavelExistente(tokensMepa.get(i + 1)) != -1) {
@@ -284,19 +282,24 @@ public class Conversor {
 
                 if (Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE") || (Objects.equals(tokensMepa.get(i), ";") && fecharSalto)) {
                     if (Objects.equals(tokensMepa.get(i), "END;") || Objects.equals(tokensMepa.get(i), "ELSE")) {
-                        novoTokensMepa.add("DSVS " + vetorBlocos.get(vetorBlocos.size() - 1));
-                        vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                        novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+                        novoTokensMepa.add("DSVS " + vetorBlocosFechados.get(vetorBlocosFechados.size() - 1));
+                        vetorBlocosFechados.remove(vetorBlocosFechados.size()-1);
+                        //int aux = vetorBlocosAbertos.size();
+                        vetorBlocosAbertos.add("L" + String.valueOf(vetorBlocosAbertos.size()));
+                        vetorBlocosFechados.add(vetorBlocosAbertos.get(vetorBlocosAbertos.size()-1));
+                        novoTokensMepa.add(vetorBlocosFechados.get(vetorBlocosFechados.size() - 1) + " NADA");
+
+
                     }
 
                     // reconhecendo ELSE.
                     if (Objects.equals(tokensMepa.get(i), "ELSE")) {
-                        vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                        novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 1) + " NADA");
+
+
                         fecharSalto = true;
                     } else if ((Objects.equals(tokensMepa.get(i), ";") && fecharSalto)) { // problema aqui
-                        vetorBlocos.add("L" + String.valueOf(vetorBlocos.size()));
-                        novoTokensMepa.add(vetorBlocos.get(vetorBlocos.size() - 2) + " NADA");
+                        novoTokensMepa.add(vetorBlocosFechados.get(vetorBlocosFechados.size() - 1) + " NADA");
+                        vetorBlocosFechados.remove(vetorBlocosFechados.size()-1);
                         fecharSalto = false;
                     }
                 }
@@ -318,8 +321,6 @@ public class Conversor {
     private void reconhecerExpressaoComparacao(int i) {
 
         if(verificarComparacao(tokensMepa.get(i))){
-            int indiceVariavelProx = verificarVariavelExistente(tokensMepa.get(i+1));
-            int indiceVariavelAnt = verificarVariavelExistente(tokensMepa.get(i-1));
 
             if(!Objects.equals(tokensMepa.get(i + 2), "DO") && !Objects.equals(tokensMepa.get(i + 2), "THEN") && !Objects.equals(tokensMepa.get(i + 2), ")")) {
                 while (!Objects.equals(tokensMepa.get(i), "DO") && !Objects.equals(tokensMepa.get(i), "THEN") && !Objects.equals(tokensMepa.get(i), ")")) {
@@ -421,7 +422,6 @@ public class Conversor {
     }
 
 
-
     void printar(ArrayList<String> tokens){
         for(int i = 0; i < tokens.size(); i++){
             System.out.println(tokens.get(i));
@@ -431,10 +431,8 @@ public class Conversor {
 }
 
 
-
-
-
 /*
+
 PROGRAM TESTE ;
     VAR N , K : INTEGER ;
         F1 , F2 , F3 : INTEGER ;
@@ -451,24 +449,19 @@ BEGIN
 
     WRITE ( N , F1 ) ;
 
-    IF ( N >= K ) THEN
-           N := F1 + F2 * 2 ;
-    ELSE
-           N := F3 + K * 3 ;
-
 END.
-*/
 
-/*
+
+
 PROGRAM TESTE ;
 VAR A , B , C , D : INTEGER ;
 BEGIN
       READ ( A , B ) ;
       C := A + B ;
-      WHILE ( C >= 0) DO
+      WHILE ( C >= 0 ) DO
       BEGIN
              C := C - 1 ;
-             IF ( C >= A) THEN
+             IF ( C >= A ) THEN
                    D := D + C * 2 ;
             ELSE
                    D := D + C * 3 ;
@@ -477,8 +470,5 @@ BEGIN
 END.
 
 
-
 */
-
-
 
